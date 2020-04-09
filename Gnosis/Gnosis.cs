@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using static Gnosis.Rule;
 
 namespace Gnosis
 {
@@ -21,26 +20,55 @@ namespace Gnosis
     }
 
 
+    public static class BuiltInActions
+    {
+        public static UnaryAction taking = new UnaryAction("taking", "take");
+        public static UnaryAction going = new UnaryAction("going", "go");
+        public static UnaryAction examining = new UnaryAction("examining", "examine");
+    }
+
 
     public static class Globals
     {
         static public List<Room> rooms = new List<Room>();
         static public List<Action> actions = new List<Action>();
         static public Room location;
+        static public List<GlobalVariable> variables = new List<GlobalVariable>();
     }
 
+    public abstract class GlobalVariable
+    {
+        public string name;
+    }
+
+
+    public class Global<T> : GlobalVariable
+    {
+        public T initialValue;
+
+        public Global(string name, T initialValue)
+        {
+            this.name = name;
+            this.initialValue = initialValue;
+            Globals.variables.Add(this);
+        }
+    }
+
+
+    
 
     public class Gnobject
     {
-
-
+        public string name;
+       
     }
 
-    public class Room : Gnobject
+
+
+    public partial class Room : Gnobject
     {
         public bool lit = true;
         public bool visited = false;
-        public string name;
         public string description;
         public Gnobject region;
         public List<(Direction, Room)> connections = new List<(Direction, Room)>();
@@ -54,10 +82,12 @@ namespace Gnosis
     }
 
 
+
+
     public class Thing : Gnobject
     {
         public bool edible = false;
-        public bool lightProducing = false;
+        public bool lit = false;
         public bool portable = true;
         public bool described = true;
         public bool markedForListing = false;
@@ -70,7 +100,6 @@ namespace Gnosis
 
         public string description;
         public string initialAppearance;
-        public string name;
 
         public Gnobject matchingKey;
         public List<string> aliases = new List<string>();
@@ -89,7 +118,7 @@ namespace Gnosis
 
     }
 
-    public class Supporter : Thing
+    public partial class Supporter : Thing
     {
         public Supporter(string name) : base(name)
         {
@@ -135,6 +164,16 @@ namespace Gnosis
         public Expression<Predicate<Thing>> applyingToSecond = (Thing a) => a is Thing;
     }
 
+
+    public class OppositeAttribute : Attribute
+    {
+        string opposite;
+        public OppositeAttribute(string s)
+        {
+            opposite = s;
+        }
+    }
+
     public class Rule
     {
         public enum Type
@@ -154,7 +193,7 @@ namespace Gnosis
         public Action applyingTo;
         public List<Gnobject> targets = new List<Gnobject>();
         public List<Room> locations = new List<Room>();
-        public Expression<Predicate<Gnobject>> condition;
+        public Expression condition;
         public List<string> say = new List<string>();
 
         public Rule()
@@ -185,11 +224,25 @@ namespace Gnosis
             return this;
         }
 
-        public Rule Condition(Expression<Predicate<Gnobject>> expr )
+        public Rule Condition<T>(Expression<Predicate<T>> expr )
         {
             condition = expr;
             return this;
         }
+
+        public Rule Condition<T>(T thing) where T : Thing
+        {
+            Expression<Predicate<Thing>> expr = (Thing a) => a == thing;
+            condition = expr;
+            return this;
+        }
+        public Rule Condition(Room room)
+        {
+            Expression<Predicate<Room>> expr = (Room a) => Globals.location == room;
+            condition = expr;
+            return this;
+        }
+
 
         public Rule Do(Func<bool> result)
         {
@@ -204,70 +257,5 @@ namespace Gnosis
         }
 
 
-    }
-
-    public class Inform
-    {
-        string OutputRoom(Room room)
-        {
-            var s = room.name + " is a room. The description is \"" + room.description + "\"\n";
-            foreach(var connection in room.connections)
-            {
-                s += connection.Item1.ToString() + " of " + room.name + " is " + connection.Item2.name + ".\n";
-            }
-            return s;
-        }
-
-        string OutputThing(Thing thing, Room location, Thing container)
-        {
-            var s = "";
-            if(location != null)
-                s = thing.name + " is a " + thing.GetType().Name + " in " + location.name + ". ";
-
-            if(container != null)
-                s = thing.name + " is a " + thing.GetType().Name + " on " + container.name + ". ";
-
-            s += "The description is \"" + thing.description + "\"\n";
-
-
-            foreach(var alias in thing.aliases)
-            {
-                s += "Understand \"" + alias + "\" as " + thing.name + ".\n";
-            }
-
-
-            if(thing is Supporter supporter)
-            {
-                foreach(var subthing in supporter.things)
-                {
-                    s += OutputThing(subthing, null, supporter);
-                }
-            }
-
-            return s;
-        }
-
-
-
-
-        public string OutputInform()
-        {
-            var output = "Generated by Kelly MacNeill begins here.\n";
-
-            foreach (var room in Globals.rooms)
-            {
-                output += OutputRoom(room);
-    
-                foreach (var thing in room.things)
-                {
-                    output += OutputThing(thing, room, null);
-                }
-            }
-
-
-            output += "Generated ends here.\n";
-
-            return output;
-        }
     }
 }

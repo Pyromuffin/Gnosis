@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Reflection;
 using Gnosis;
 using static Gnosis.Rule;
+using static Gnosis.BuiltInActions;
+
 
 namespace Demo
 {
@@ -13,7 +16,7 @@ namespace Demo
 
             // lets write some inform!
             var inform = new Inform();
-            var output = inform.OutputInform();
+            var output = inform.OutputInform(demo);
             var path = @"C:\Users\pyrom\Documents\GitHub\Inform Gen Test\Gen Test.materials\Extensions\Kelly MacNeill\Generated.I7X";
 
             System.IO.File.WriteAllText(path, output);
@@ -21,14 +24,29 @@ namespace Demo
         }
     }
 
+    interface wet 
+    { 
+        bool wet { get; } 
+        bool dry { get; }
+    };
+
+    /*
+    public class Thing : Gnosis.Thing
+    {
+        public Thing(string name) : base(name){}
+    }
+    */
 
     public class Demo1
     {
+        public bool lockdown = true;
+
         public void Start()
         {
+
             Room kitchen = new Room("The Kitchen");
             kitchen.description =
-       @"I'm in the kitchen now. [if the lockdown state is true] A pleasant yet urgent announcement rings '[b]Laserite Core criticality event detected: apartment lockdown in effect.[/b]' The doors leading to other parts of the apartment are shielded with comically elaborate folding door layers.[end if]
+       @"I'm in the kitchen now. [if the lockdown is true] A pleasant yet urgent announcement rings '[b]Laserite Core criticality event detected: apartment lockdown in effect.[/b]' The doors leading to other parts of the apartment are shielded with comically elaborate folding door layers.[end if]
         [if unvisited]The refrigerator remains unmentioned.[end if]
         A [table] obnoxiously takes up most of the useful room in here.";
 
@@ -48,17 +66,19 @@ namespace Demo
             kitchen.things.Add(kitchenTable);
             kitchenTable.description = "An unlikely place to put anything useful.";
 
+            Thing potato = new Thing("a potato");
+            Thing lomato = new Thing("a lomato?");
+
 
             Thing chonkChart = new Thing("The chonk chart");
             chonkChart.description =
-                @"A small holocard with a guady label that says '[b]Now That's What I Call Chonk! Vol. 1[/b]'
+                @"A small holocard with a gaudy label that says '[b]Now That's What I Call Chonk! Vol. 1[/b]'
                 I think I can use this with the Chonkédex app on my [cellphone].";
 
             kitchenTable.things.Add(chonkChart);
 
-            UnaryAction taking = new UnaryAction("insulting", "insult [something]");
 
-            Instead(taking).Condition((Gnobject a) => a == chonkChart).Say("I lean over the[chart], but my[cellphone] zips in and absorbs the holocard before i can chow down.");
+            Instead(taking).Condition((Thing noun) => (noun.edible || noun.portable) && (noun.lit || noun.scenery) ).Say("I lean over the [chart], but my[cellphone] zips in and absorbs the holocard before i can chow down.");
         }
     }
 
