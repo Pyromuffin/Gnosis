@@ -34,15 +34,15 @@ namespace Demo
 
     interface wet
     {
-        bool wet {get;}
-        bool dry {get;}
+        bool wet { get; }
+        bool dry { get; }
     };
 
 
     [Kind]
     public class Potato : Thing, wet
     {
-        public Potato(string name) : base(name) {}
+        public Potato(string name) : base(name) { }
 
         public bool wet { get; set; }
         public bool dry { get; set; }
@@ -89,15 +89,15 @@ namespace Demo
             kitchenTable.things.Add(chonkChart);
 
 
-            
+
             Instead(taking).Condition((Thing noun) => (noun.edible || noun.portable) && (noun.lit || noun.scenery)).Do(() =>
-                {
-                    Say("I lean over the [chart], but my[cellphone] zips in and absorbs the holocard before i can chow down.");
-                    lockdown = false;
-                    lomato.location = yourRoom;
-                    potato.wet = true;
-                });
-            
+            {
+                Say("I lean over the [chart], but my[cellphone] zips in and absorbs the holocard before i can chow down.");
+                lockdown = false;
+                lomato.location = yourRoom;
+                potato.wet = true;
+            });
+
         }
     }
 

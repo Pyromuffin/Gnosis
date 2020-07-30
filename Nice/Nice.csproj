@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Configurations>Debug;Release;OK</Configurations>
+	<BootstrapBuildPath>C:\Users\pyrom\AppData\Local\Microsoft\VisualStudio\16.0_26ffc5ccRoslynDev\Extensions\Microsoft\Roslyn Compilers\42.42.42.4242424\</BootstrapBuildPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DynamicLanguageRuntime" Version="1.2.3-candidate1" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.6.0-dev" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.6.0-dev">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.EditorFeatures" Version="3.6.0-dev" />
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.6.0-dev">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.23" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GnosisNet\Gnosis.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp.Expressions">
+      <HintPath>..\..\..\..\Desktop\ExpressionFutures-master\CSharpExpressions\Microsoft.CSharp.Expressions\bin\Debug\Microsoft.CSharp.Expressions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Expressions.Debugging">
+      <HintPath>..\..\..\..\Desktop\ExpressionFutures-master\CSharpExpressions\Microsoft.CSharp.Expressions\bin\Debug\System.Linq.Expressions.Debugging.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

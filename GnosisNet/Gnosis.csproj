@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp.Expressions">
+      <HintPath>..\..\..\..\Desktop\ExpressionFutures-master\CSharpExpressions\Microsoft.CSharp.Expressions\bin\Debug\Microsoft.CSharp.Expressions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Expressions.Debugging">
+      <HintPath>..\..\..\..\Desktop\ExpressionFutures-master\CSharpExpressions\Microsoft.CSharp.Expressions\bin\Debug\System.Linq.Expressions.Debugging.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -33,34 +33,14 @@ namespace Gnosis
         static public List<Room> rooms = new List<Room>();
         static public List<Action> actions = new List<Action>();
         static public Room location;
-        static public List<GlobalVariable> variables = new List<GlobalVariable>();
-    }
-
-    public abstract class GlobalVariable
-    {
-        public string name;
+        static public Room nowhere;
     }
 
 
-    public class Global<T> : GlobalVariable
-    {
-        public T initialValue;
-
-        public Global(string name, T initialValue)
-        {
-            this.name = name;
-            this.initialValue = initialValue;
-            Globals.variables.Add(this);
-        }
-    }
-
-
-    
 
     public class Gnobject
     {
         public string name;
-       
     }
 
 
@@ -82,6 +62,8 @@ namespace Gnosis
     }
 
 
+    public class KindAttribute : Attribute
+    { }
 
 
     public class Thing : Gnobject
@@ -101,21 +83,16 @@ namespace Gnosis
         public string description;
         public string initialAppearance;
 
+        public Room location;
+
         public Gnobject matchingKey;
         public List<string> aliases = new List<string>();
-        public List<System.Type> props = new List<System.Type>(); 
 
         public Thing(string name)
         {
             this.name = name;
+            location = Globals.nowhere;
         }
-
-        public void Is<T>()
-        {
-            props.Add(typeof(T));
-        }
-
-
     }
 
     public partial class Supporter : Thing
@@ -194,6 +171,8 @@ namespace Gnosis
         public List<Gnobject> targets = new List<Gnobject>();
         public List<Room> locations = new List<Room>();
         public Expression condition;
+        public Expression body;
+
         public List<string> say = new List<string>();
 
         public Rule()
@@ -244,16 +223,23 @@ namespace Gnosis
         }
 
 
-        public Rule Do(Func<bool> result)
+        public Rule Do(Expression<System.Action> expr)
         {
-
+            body = expr;
             return this;
         }
 
-        public Rule Say(string str)
+        
+        public Rule Do(Expression<Func<bool>> expr)
         {
-            say.Add(str);
+            body = expr;
             return this;
+        }
+        
+ 
+
+        public static void Say(string str)
+        {
         }
 
 
